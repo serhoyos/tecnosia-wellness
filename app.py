@@ -1,3 +1,6 @@
+import os # <--- AGREGA ESTA LÍNEA AL PRINCIPIO
+from flask import Flask, render_template, request, jsonify, send_from_directory
+# ... resto de los imports ...
 from flask import Flask, render_template
 import os
 from flask import Flask
@@ -17,9 +20,16 @@ app = Flask(__name__)
 
 # Configuración de la aplicación
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'clave_segura_por_defecto')
-# Configura la URI de la base de datos desde el archivo .env
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///tecnosia_wellness.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Configuración de la Base de Datos (Inteligente)
+# Si estamos en Render, usa la variable de entorno DATABASE_URL.
+# Si estamos en tu computador local, usa el archivo sqlite:///tecnosia.db
+database_url = os.environ.get('DATABASE_URL')
+
+if database_url and database_url.startswith("postgres://"):
+    # Corrección para SQLAlchemys antiguas que no entienden postgres://
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'sqlite:///tecnosia.db'
 
 # Inicializar extensiones con la aplicación
 db.init_app(app)
