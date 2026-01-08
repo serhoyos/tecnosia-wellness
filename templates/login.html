@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Tecnosia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #0f766e; --bg: #f0fdfa; --text: #134e4a; --success-bg: #d1fae5; --success-text: #065f46; }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        
+        .auth-card { 
+            background: white; 
+            padding: 1.5rem 2.5rem; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(15, 118, 110, 0.1); 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center; 
+        }
+        
+        .logo-img { 
+            width: 100%; max-width: 280px; height: auto;     
+            margin-top: -20px; margin-bottom: -20px; 
+        }
+        
+        h2 { 
+            color: var(--primary); margin-bottom: 1.5rem; margin-top: 0; font-size: 1.5rem;
+        }
+
+        /* ESTILO NUEVO: Barra de mensaje de éxito */
+        .success-banner {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #10b981;
+            display: none; /* Oculto por defecto */
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .form-group { margin-bottom: 1rem; text-align: left; }
+        
+        label { display: block; margin-bottom: 0.4rem; font-weight: 500; font-size: 0.9rem; }
+        
+        input { 
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; 
+            box-sizing: border-box; font-family: inherit; 
+        }
+        input:focus { outline: none; border-color: var(--primary); ring: 2px solid var(--primary); }
+        
+        .btn { 
+            width: 100%; padding: 12px; background: var(--primary); color: white; border: none; 
+            border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0.5rem; 
+            transition: background 0.3s; font-size: 1rem;
+        }
+        .btn:hover { background: #115e59; }
+        
+        .links { margin-top: 1.2rem; font-size: 0.9rem; }
+        .links a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo-img">
+        <h2>Bienvenido de nuevo</h2>
+        
+        <div id="successMessage" class="success-banner">
+            ✅ ¡Cuenta creada correctamente! Por favor inicia sesión.
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" id="email" required placeholder="tu@email.com">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="password" required placeholder="******">
+            </div>
+            <button type="submit" class="btn">Ingresar</button>
+        </form>
+
+        <div class="links">
+            ¿No tienes cuenta? <a href="/register">Regístrate gratis</a>
+            <br><br>
+            <a href="/" style="color: #666; font-weight: 400;">← Volver al inicio</a>
+        </div>
+    </div>
+
+    <script>
+        // 1. Lógica para detectar si venimos del registro
+        window.onload = function() {
+            // Buscamos si en la URL existe "?registered=true"
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registered') === 'true') {
+                // Si existe, mostramos la barra verde
+                const banner = document.getElementById('successMessage');
+                banner.style.display = 'block';
+            }
+        };
+
+        // 2. Lógica del Login
+        const form = document.getElementById('loginForm');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('user_id', data.user_id);
+                    localStorage.setItem('user_email', data.email);
+                    window.location.href = '/dashboard'; 
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+        });
+    </script>
+</body>
+</html>

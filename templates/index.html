@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tecnosia | Tecnología para el Bienestar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f766e; /* Verde Azulado (Teal) */
+            --accent: #d97706;  /* Dorado/Cobre */
+            --bg: #f0fdfa;      /* Fondo muy suave */
+            --text: #134e4a;    /* Texto oscuro */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 50px; 
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        /* Hero Section */
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, rgba(15, 118, 110, 0.05) 0%, rgba(255,255,255,0) 100%);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        p.subtitle {
+            font-size: 1.25rem;
+            color: #555;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        /* Botones */
+        .btn {
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #115e59 100%);
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(15, 118, 110, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(15, 118, 110, 0.4);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            margin-left: 15px;
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(15, 118, 110, 0.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo Tecnosia" class="logo-img">
+            <span class="brand-name">Tecnosia</span>
+        </div>
+        <nav>
+            <a id="navLink" href="/login" style="text-decoration: none; color: var(--text); font-weight: 500;">Iniciar Sesión</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Tu salud digestiva,<br>decodificada.</h1>
+        <p class="subtitle">
+            Combina la sabiduría ancestral del Ayurveda con tecnología de datos para sanar tu colon y recuperar tu energía vital en 90 días.
+        </p>
+        
+        <div class="cta-buttons">
+            <a id="mainCta" href="/test-dosha" class="btn btn-primary">Descubrir mi Dosha Gratis</a>
+            
+            <a href="#" class="btn btn-outline">Saber más</a>
+        </div>
+    </section>
+
+    <script>
+        // Verificamos si hay un usuario logueado en el navegador
+        const userId = localStorage.getItem('user_id');
+
+        if (userId) {
+            // 1. Modificar el enlace del menú superior (Header)
+            const navLink = document.getElementById('navLink');
+            navLink.innerText = "Ir a mi Panel";       // Cambia el texto
+            navLink.href = "/dashboard";               // Cambia el destino
+            navLink.style.fontWeight = "bold";
+            navLink.style.color = "#0f766e";           // Lo resalta en verde
+            
+            // 2. Modificar el botón principal verde (Hero)
+            const mainCta = document.getElementById('mainCta');
+            mainCta.innerText = "Ver mi Progreso";     // Cambia el texto
+            mainCta.href = "/dashboard";               // Cambia el destino
+        }
+    </script>
+
+</body>
+</html>

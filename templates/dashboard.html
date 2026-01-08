@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Panel - Tecnosia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #0f766e; --bg: #f0fdfa; --text: #134e4a; --card-bg: white; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; }
+        
+        /* Navbar simple */
+        nav { background: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { font-weight: bold; color: var(--primary); font-size: 1.2rem; }
+        .logout { color: #d97706; text-decoration: none; font-weight: 600; cursor: pointer; }
+
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 20px; }
+        
+        /* Header del Dashboard */
+        .welcome-header { margin-bottom: 2rem; }
+        h1 { margin: 0; font-size: 2rem; }
+        p.subtitle { color: #666; margin-top: 5px; }
+
+        /* Tarjetas */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        
+        .card { background: var(--card-bg); padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .card-title { color: var(--primary); font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        
+        /* Estilos dinámicos para el plan */
+        .plan-content { display: none; } /* Oculto por defecto */
+        .plan-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; line-height: 1.5; }
+
+        .btn-action { display: block; width: 100%; padding: 10px; background: var(--primary); color: white; text-align: center; border-radius: 8px; text-decoration: none; margin-top: 1rem; }
+        .check-item { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; }
+        .check-item input { margin-right: 10px; transform: scale(1.2); accent-color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Tecnosia Wellness</div>
+        <a onclick="logout()" class="logout">Cerrar Sesión</a>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-header">
+            <h1 id="userGreeting">Hola, ...</h1>
+            <p class="subtitle">Tu plan de bienestar personalizado</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">🧬 Tu Biotipo (Dosha)</div>
+                <div id="doshaDisplay" style="font-size: 2.5rem; color: #d97706; font-weight: bold; text-align: center; margin: 2rem 0;">
+                    Cargando...
+                </div>
+                <p style="text-align: center; color: #666;">
+                    Basado en tu test inicial.
+                </p>
+                <a href="/test-dosha" style="display: block; text-align: center; margin-top: 1rem; color: var(--primary);">Volver a hacer el test</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🥗 Tu Plan de Alimentación</div>
+                
+                <div id="plan-Vata" class="plan-content">
+                    <p><b>Objetivo:</b> Calmar, calentar y estabilizar.</p>
+                    <ul>
+                        <li>🍲 <b>A favor:</b> Comidas calientes, sopas, guisos, aceites saludables, sabores dulces/salados.</li>
+                        <li>❌ <b>Evitar:</b> Ensaladas frías, bebidas heladas, galletas secas, cafeína en exceso.</li>
+                        <li>🌿 <b>Superalimento:</b> Jengibre y Canela.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                <div class="card-title">✅ Tu Progreso de Hoy</div>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">Marca tus victorias diarias (No negociables).</p>
+                
+                <form id="trackerForm">
+                    <label class="check-item">
+                        <input type="checkbox" id="checkSleep"> 
+                        <span>😴 Sueño Consistente</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" id="checkDiet"> 
+                        <span>🥗 Dieta 80/20</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" id="checkMeditation"> 
+                        <span>🧘 Meditación (10 min)</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" id="checkMovement"> 
+                        <span>🏃 Movimiento</span>
+                    </label>
+                    
+                    <textarea id="notes" placeholder="¿Cómo te sentiste hoy?" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
+
+                    <button type="submit" class="btn-action" style="background-color: #d97706; color: white; border: none; font-weight: bold;">Guardar Día
+                    </button>
+                </form>
+            </div>
+
+                <div id="plan-Pitta" class="plan-content">
+                    <p><b>Objetivo:</b> Enfriar y moderar intensidad.</p>
+                    <ul>
+                        <li>🍉 <b>A favor:</b> Frutas dulces, ensaladas frescas, coco, pepino, sabores amargos.</li>
+                        <li>❌ <b>Evitar:</b> Picantes, alcohol, fritos, exceso de sal, tomate.</li>
+                        <li>🌿 <b>Superalimento:</b> Menta y Aloe Vera.</li>
+                    </ul>
+                </div>
+
+                <div id="plan-Kapha" class="plan-content">
+                    <p><b>Objetivo:</b> Estimular y aligerar.</p>
+                    <ul>
+                        <li>🌶️ <b>A favor:</b> Comidas ligeras, picantes, vegetales al vapor, legumbres.</li>
+                        <li>❌ <b>Evitar:</b> Lácteos pesados, dulces, harinas refinadas, siestas diurnas.</li>
+                        <li>🌿 <b>Superalimento:</b> Pimienta negra y Cúrcuma.</li>
+                    </ul>
+                </div>
+
+                <div id="plan-None" class="plan-content">
+                    <p>Aún no tenemos datos suficientes para crear tu plan.</p>
+                    <a href="/test-dosha" class="btn-action">Realizar Test Ahora</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Al cargar la página, pedimos los datos
+        window.onload = async function() {
+            const userId = localStorage.getItem('user_id');
+            
+            if (!userId) {
+                window.location.href = '/login';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/get_dashboard_data/${userId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    // 1. Saludo
+                    document.getElementById('userGreeting').innerText = `Hola, ${data.email.split('@')[0]}`;
+                    
+                    // 2. Mostrar Dosha
+                    const dosha = data.dosha || "No definido";
+                    document.getElementById('doshaDisplay').innerText = dosha;
+
+                    // 3. Mostrar el plan correcto
+                    // Ocultamos todos primero
+                    document.querySelectorAll('.plan-content').forEach(el => el.classList.remove('active'));
+
+                    // Lógica simple para mostrar el plan
+                    // Si el dosha contiene "Vata" (ej: Vata o Vata-Pitta), mostramos consejos Vata por prioridad
+                    let planId = 'plan-None';
+                    if (dosha.includes('Vata')) planId = 'plan-Vata';
+                    else if (dosha.includes('Pitta')) planId = 'plan-Pitta';
+                    else if (dosha.includes('Kapha')) planId = 'plan-Kapha';
+                    
+                    if (dosha === "No definido") planId = 'plan-None';
+
+                    const selectedPlan = document.getElementById(planId);
+                    if (selectedPlan) selectedPlan.classList.add('active');
+
+                } else {
+                    alert("Error cargando datos");
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/login';
+        }
+        // Lógica para guardar el día
+        document.getElementById('trackerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userId = localStorage.getItem('user_id');
+
+            const data = {
+                user_id: userId,
+                slept: document.getElementById('checkSleep').checked,
+                diet: document.getElementById('checkDiet').checked,
+                meditation: document.getElementById('checkMeditation').checked,
+                movement: document.getElementById('checkMovement').checked,
+                notes: document.getElementById('notes').value
+            };
+
+            try {
+                const response = await fetch('/api/log_day', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    alert("¡Excelente! Progreso guardado.");
+                } else {
+                    alert("Hubo un error al guardar.");
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubre tu Dosha - Tecnosia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #0f766e; --accent: #d97706; --bg: #f0fdfa; --text: #134e4a; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 2rem; }
+        
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 3rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(15, 118, 110, 0.05); }
+        
+        header { text-align: center; margin-bottom: 3rem; }
+        .logo-img { height: 60px; margin-bottom: 10px; }
+        h1 { color: var(--primary); margin: 0; }
+        p.intro { color: #666; max-width: 600px; margin: 10px auto; }
+
+        .section-title { 
+            background: rgba(15, 118, 110, 0.1); color: var(--primary); 
+            padding: 10px 20px; border-radius: 8px; margin: 2rem 0 1rem 0; font-weight: 600;
+        }
+
+        .question-group { margin-bottom: 1.5rem; }
+        .checkbox-label {
+            display: flex; align-items: center; padding: 15px; border: 1px solid #eee;
+            border-radius: 10px; cursor: pointer; transition: all 0.2s;
+        }
+        .checkbox-label:hover { background-color: #f9f9f9; border-color: var(--primary); }
+        .checkbox-label input { margin-right: 15px; transform: scale(1.2); accent-color: var(--primary); }
+
+        .btn {
+            display: block; width: 100%; padding: 15px; background: var(--primary); color: white;
+            border: none; border-radius: 50px; font-size: 1.2rem; font-weight: 600;
+            cursor: pointer; margin-top: 3rem; transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2); }
+
+        /* Modal de Resultado */
+        #resultModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 500px;
+            animation: slideUp 0.4s ease;
+        }
+        @keyframes slideUp { from {transform: translateY(50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+        
+        .dosha-badge {
+            font-size: 2rem; font-weight: bold; color: var(--accent); margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo-img">
+            <h1>Descubre tu Naturaleza</h1>
+            <p class="intro">Selecciona todas las afirmaciones que describan cómo te has sentido <b>la mayor parte de tu vida</b> (no solo hoy).</p>
+        </header>
+
+        <form id="doshaForm">
+            <div class="section-title">🌬️ Sección 1: Energía de Movimiento (Aire)</div>
+            <label class="checkbox-label"><input type="checkbox" name="vata" value="1"> Soy delgado/a y me cuesta ganar peso.</label>
+            <label class="checkbox-label"><input type="checkbox" name="vata" value="1"> Mi piel tiende a ser seca y áspera.</label>
+            <label class="checkbox-label"><input type="checkbox" name="vata" value="1"> Mis manos y pies suelen estar fríos.</label>
+            <label class="checkbox-label"><input type="checkbox" name="vata" value="1"> Soy muy activo/a, inquieto/a y me cuesta quedarme quieto.</label>
+            <label class="checkbox-label"><input type="checkbox" name="vata" value="1"> Aprendo rápido pero olvido rápido.</label>
+            <label class="checkbox-label"><input type="checkbox" name="vata" value="1"> Mi digestión es irregular (gases, estreñimiento frecuente).</label>
+
+            <div class="section-title">🔥 Sección 2: Energía de Transformación (Fuego)</div>
+            <label class="checkbox-label"><input type="checkbox" name="pitta" value="1"> Mi contextura es media y tengo buen tono muscular.</label>
+            <label class="checkbox-label"><input type="checkbox" name="pitta" value="1"> Siento calor fácilmente y sudo mucho.</label>
+            <label class="checkbox-label"><input type="checkbox" name="pitta" value="1"> Tengo mucho apetito y me pongo irritable si no como.</label>
+            <label class="checkbox-label"><input type="checkbox" name="pitta" value="1"> Soy perfeccionista, ordenado/a y competitivo/a.</label>
+            <label class="checkbox-label"><input type="checkbox" name="pitta" value="1"> Mi piel es sensible, se pone roja fácil o tengo pecas/lunares.</label>
+            <label class="checkbox-label"><input type="checkbox" name="pitta" value="1"> Tiendo a la acidez estomacal o heces sueltas.</label>
+
+            <div class="section-title">🌍 Sección 3: Energía de Estructura (Tierra)</div>
+            <label class="checkbox-label"><input type="checkbox" name="kapha" value="1"> Mi contextura es grande, sólida y gano peso fácil.</label>
+            <label class="checkbox-label"><input type="checkbox" name="kapha" value="1"> Mi piel es suave, grasa o húmeda.</label>
+            <label class="checkbox-label"><input type="checkbox" name="kapha" value="1"> Tengo pelo grueso, abundante y brillante.</label>
+            <label class="checkbox-label"><input type="checkbox" name="kapha" value="1"> Soy tranquilo/a, paciente y no me enojo fácil.</label>
+            <label class="checkbox-label"><input type="checkbox" name="kapha" value="1"> Mi digestión es lenta y me siento pesado/a después de comer.</label>
+            <label class="checkbox-label"><input type="checkbox" name="kapha" value="1"> Duermo profundo y me cuesta levantarme por las mañanas.</label>
+
+            <button type="submit" class="btn">Calcular mi Resultado</button>
+        </form>
+    </div>
+
+    <div id="resultModal">
+        <div class="modal-content">
+            <h2>Tu Dosha Predominante es:</h2>
+            <div id="finalDosha" class="dosha-badge">...</div>
+            <p>Hemos guardado este resultado en tu perfil para personalizar tu plan de bienestar.</p>
+            <button class="btn" onclick="window.location.href='/dashboard'">Ir a mi Panel de Control</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('doshaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // 1. Verificar si el usuario está logueado
+            const userId = localStorage.getItem('user_id');
+            if (!userId) {
+                alert("Por favor inicia sesión para guardar tus resultados.");
+                window.location.href = '/login';
+                return;
+            }
+
+            // 2. Calcular puntajes contando los checkboxes marcados
+            const vataScore = document.querySelectorAll('input[name="vata"]:checked').length;
+            const pittaScore = document.querySelectorAll('input[name="pitta"]:checked').length;
+            const kaphaScore = document.querySelectorAll('input[name="kapha"]:checked').length;
+
+            // 3. Determinar el ganador
+            let dominant = "Tridosha";
+            const max = Math.max(vataScore, pittaScore, kaphaScore);
+
+            if (vataScore === max && pittaScore < max && kaphaScore < max) dominant = "Vata";
+            else if (pittaScore === max && vataScore < max && kaphaScore < max) dominant = "Pitta";
+            else if (kaphaScore === max && vataScore < max && pittaScore < max) dominant = "Kapha";
+            else if (vataScore === max && pittaScore === max) dominant = "Vata-Pitta";
+            else if (vataScore === max && kaphaScore === max) dominant = "Vata-Kapha";
+            else if (pittaScore === max && kaphaScore === max) dominant = "Pitta-Kapha";
+
+            // 4. Enviar al Backend
+            try {
+                const response = await fetch('/api/save_dosha', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        dominant_dosha: dominant,
+                        vata_score: vataScore,
+                        pitta_score: pittaScore,
+                        kapha_score: kaphaScore
+                    })
+                });
+
+                if (response.ok) {
+                    document.getElementById('finalDosha').innerText = dominant;
+                    document.getElementById('resultModal').style.display = 'flex';
+                } else {
+                    alert("Error al guardar el perfil.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error de conexión.");
+            }
+        });
+    </script>
+</body>
+</html>
