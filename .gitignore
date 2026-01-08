@@ -1,0 +1,14 @@
+# Entornos virtuales
+venv/
+__pycache__/
+*.pyc
+
+# Base de datos local
+*.db
+instance/
+
+# Archivos de sistema
+.DS_Store
+
+# Secretos
+.env
